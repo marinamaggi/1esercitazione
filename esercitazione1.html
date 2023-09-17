@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Forecast API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+    <style>
+
+        #hero{
+            width: 100%;
+            height: 100vh;
+            background: url(https://images.pexels.com/photos/842711/pexels-photo-842711.jpeg?auto=compress&cs=tinysrgb&w=600);
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            
+            }
+
+
+            input{
+                width: 100%;
+            }
+
+
+            .flex-fill{
+                
+                flex: 1 !important
+
+            }
+
+            #map {
+                 height: 180px;
+                 
+                 }
+
+
+    </style>
+</head>
+
+
+<body>
+
+
+
+<section id="hero" class="d-flex justify-content-center align-items-center">
+    <div class="main-content">
+       
+        <div class="main-title text-center text-white">
+            <h1>Weather Forecast API</h1>
+            <h2>Inserire le coordinate per avre info sul meteo</h2>
+        </div>
+        <div id="map">
+
+        </div>
+        <div class="formWrapper">
+            <form action="" method="get">
+                <div class="forRow d-flex">
+                    <div class="field flex-fill me-5">
+                        <label for="lat">Latitudine</label>
+                        <input class="d-block" type="text" name="lat" id="lat" placeholder="51.44">
+                    </div>
+                    <div class="field flex-fill">
+                        <label for="lng">Longitudine</label>
+                        <input class="d-block" type="text" name="lng" id="lng" placeholder="51.44">
+                    </div>
+                </div>
+               
+                <div class="forRow d-flex">
+                    <div class="field flex-fill me-5">
+                        <input class="d-block btn btn-light" type="reset" value="Reset">
+                    </div>
+                    <div class="field flex-fill">
+                        <input class="d-block btn btn-success" type="submit" value="Richiedi i dati">
+                    </div>
+                </div>
+               
+
+
+            </form>
+        </div>
+        <ul class="d-block text-white text-center">
+            <li>2023-09-19T04:00 -> 26.2</li>
+        </ul>
+    </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script>
+    document.querySelector("form").addEventListener("submit", function (event) {
+             event.preventDefault()
+             let latitudine = document.querySelector("#lat").value
+             let longitudine = document.querySelector("#lng").value
+ 
+             console.log(latitudine, longitudine)
+ 
+             let url = `https://api.open-meteo.com/v1/forecast?latitude=${latitudine}&longitude=${longitudine}&hourly=temperature_2m,relativehumidity_2m,precipitation_probability,windspeed_10m`
+ 
+ 
+             console.log(url)
+ 
+             fetch(url).then(function (resp) {
+                 return resp.json()
+             }).then(function (data) {
+                 console.log(data.hourly.time)
+                 console.log(data.hourly.temperature_2m)
+             })
+         })
+ </script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+crossorigin=""></script>
+
+<script>
+        var map = L.map('map').setView([51.505, -0.09], 13);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+
+    map , on("click", function(e){
+        console.log(e)
+        var marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+        document.querySelector("#lat").value = e.latlng.lat
+        document.querySelector("lng").value = e.latlng.lng
+    });
+
+</script>
+
+</body>
+</html>
