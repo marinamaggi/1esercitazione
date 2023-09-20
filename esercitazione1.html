@@ -57,11 +57,11 @@
         <div class="formWrapper">
             <form action="" method="get">
                 <div class="forRow d-flex">
-                    <div class="field flex-fill me-5">
+                    <div class="field flex-fill me-5 text-white">
                         <label for="lat">Latitudine</label>
                         <input class="d-block" type="text" name="lat" id="lat" placeholder="51.44">
                     </div>
-                    <div class="field flex-fill">
+                    <div class="field flex-fill text-white">
                         <label for="lng">Longitudine</label>
                         <input class="d-block" type="text" name="lng" id="lng" placeholder="51.44">
                     </div>
@@ -115,20 +115,52 @@ integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
 crossorigin=""></script>
 
 <script>
-        var map = L.map('map').setView([51.505, -0.09], 13);
 
+    navigator.geolocation.getCurrentPosition(
+        function (event){
+            let latitudineUtente = event.coords.latitude
+            let longitudeUtente = event.coords.longitude
+            console.log(latitudineUtente)
+            console.log(longitudeUtente)
+            console.log(event.coords.longitude)
+            console.log("l'utente ha accettatao")
+            document.querySelector("#lat").value = latitudineUtente
+            document.querySelector("#lng").value = longitudeUtente
+
+            createMap(latitudineUtente,longitudeUtente)
+
+        },
+        function (event){
+            console.log("l'utente non ha accettato")
+            createMap(20, -1)
+        }
+    )
+        function createMap(lat, lng){
+
+            var map = L.map('map').setView([lat, lng], 13);
+
+            
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
+         maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
 
+        let marker = L.marker( [lat,lng]).addTo(map);
 
-    map , on("click", function(e){
+        map , on("click", function(e){
         console.log(e)
         var marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
         document.querySelector("#lat").value = e.latlng.lat
         document.querySelector("lng").value = e.latlng.lng
-    });
+    })
+
+
+        }
+       
+
+
+
+  
 
 </script>
 
